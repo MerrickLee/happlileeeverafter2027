@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import * as amplitude from '@amplitude/analytics-browser'
 
-const AMPLITUDE_API_KEY = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY || 'dummy-key'
+const AMPLITUDE_API_KEY = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY || 'a013a8aef5661df201bf8330107f5244'
 
 declare global {
   interface Window {
