@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: 'HappiLee Ever After 2027',
     images: [
       {
-        url: '/og-image.jpg',
+        url: 'https://happileeeverafter2027.com/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Gillian & Merrick Lee Wedding',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Gillian & Merrick · #HappiLeeEverAfter2027',
     description: 'Sealed in Santorini, crowned in Jamaica. Join us in celebrating the wedding of Gillian & Merrick Lee, August 1, 2027.',
-    images: ['/og-image.jpg'],
+    images: ['https://happileeeverafter2027.com/og-image.jpg'],
   },
 }
 
