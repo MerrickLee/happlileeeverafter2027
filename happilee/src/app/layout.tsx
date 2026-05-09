@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: 'https://happileeeverafter2027.com/og-image.jpg',
+        secureUrl: 'https://happileeeverafter2027.com/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Gillian & Merrick Lee Wedding',
@@ -74,7 +75,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${italiana.variable} ${playfair.variable} ${tenor.variable}`}>
+    <html lang="en" prefix="og: http://ogp.me/ns#" className={`${italiana.variable} ${playfair.variable} ${tenor.variable}`}>
       <body className="bg-bg text-ink font-playfair">
         <script
           type="application/ld+json"
