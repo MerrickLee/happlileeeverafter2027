@@ -86,7 +86,7 @@ export default function Gallery() {
       >
         <div className="video-container">
           <iframe 
-            src="https://www.instagram.com/p/DYDPAYOMZtx/embed/" 
+            src="https://www.instagram.com/reel/DYDPAYOMZtx/embed/" 
             width="100%" 
             height="550" 
             frameBorder="0" 
@@ -94,14 +94,13 @@ export default function Gallery() {
             allowTransparency={true}
             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
           />
-          <div className="video-fallback" style={{ textAlign: 'center', padding: '1rem' }}>
+          <div className="video-fallback">
             <a 
               href="https://www.instagram.com/reel/DYDPAYOMZtx/" 
               target="_blank" 
               rel="noopener noreferrer"
               onClick={() => trackEvent('proposal_instagram_clicked')}
-              className="btn-outline"
-              style={{ fontSize: '0.6rem' }}
+              className="btn-outline w-full"
             >
               Open in Instagram
             </a>
@@ -264,8 +263,17 @@ export default function Gallery() {
         /* Modal Gallery Styles */
         .video-container {
           display: flex;
-          justify-content: center;
+          flex-direction: column;
+          align-items: center;
           background: #000;
+          overflow: hidden;
+        }
+        .video-fallback {
+          width: 100%;
+          background: var(--bg-warm);
+          padding: 1.5rem;
+          border-top: 1px solid rgba(184, 137, 59, 0.1);
+          text-align: center;
         }
         .gallery-modal-content {
           display: flex;
