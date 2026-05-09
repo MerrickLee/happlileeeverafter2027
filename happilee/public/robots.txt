@@ -3,3 +3,8 @@ Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
+
+User-agent: Facebot
+Allow: /
+
+Sitemap: https://happileeeverafter2027.com/sitemap.xml
