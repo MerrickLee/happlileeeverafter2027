@@ -4,6 +4,7 @@
 import React from 'react'
 import SectionHeader from '../ui/SectionHeader'
 import { useSectionTracking } from '@/lib/useSectionTracking'
+import { trackEvent } from '@/lib/amplitude'
 
 const registries = [
   { name: "Bloomingdale's", desc: 'Classic essentials for our home', monogram: 'B', isFeatured: false, link: '#' },
@@ -31,6 +32,7 @@ export default function Registry() {
               <div className="registry-desc">{item.desc}</div>
               <a
                 href={item.link}
+                onClick={() => trackEvent('registry_viewed', { registry_name: item.name })}
                 className="btn-outline"
                 style={item.isFeatured ? { borderColor: 'var(--emerald)', color: 'var(--emerald)' } : {}}
               >

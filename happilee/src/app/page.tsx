@@ -22,8 +22,7 @@ export default function Home() {
         <OurStory />
         <Gallery />
         <Events />
-        {/* Registry section hidden for now — re-enable when ready */}
-        {/* <Registry /> */}
+        <Registry />
         <EmailSignup />
         <Guestbook />
         <Footer />

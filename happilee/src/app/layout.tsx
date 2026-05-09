@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { italiana, playfair, tenor } from './fonts'
 import { AmplitudeProvider } from '@/lib/amplitude'
+import Analytics from '@/components/Analytics'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${italiana.variable} ${playfair.variable} ${tenor.variable}`}>
       <body className="bg-bg text-ink font-playfair">
+        <Analytics />
         <AmplitudeProvider>
           {children}
         </AmplitudeProvider>

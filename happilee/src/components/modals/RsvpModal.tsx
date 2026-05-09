@@ -14,7 +14,11 @@ const rsvpSchema = z.object({
   name: z.string().min(2, 'Name is required'),
   email: z.string().email('Valid email is required'),
   phone: z.string().optional(),
-  address: z.string().optional(),
+  address: z.string().min(1, 'Address is required'),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State is required'),
+  zip: z.string().min(1, 'Zip is required'),
+  country: z.string().min(1, 'Country is required'),
   guests: z.string(),
   attending: z.string(),
 })
@@ -25,6 +29,7 @@ export default function RsvpModal() {
   const { isOpen, currentEvent, closeModal } = useRsvp()
   const [submitted, setSubmitted] = useState(false)
   const [savedInfo, setSavedInfo] = useState<Partial<RsvpFormData> | null>(null)
+  const [progress, setProgress] = useState(0)
 
   const { 
     register, 
@@ -43,6 +48,7 @@ export default function RsvpModal() {
   useEffect(() => {
     if (isOpen) {
       setSubmitted(false)
+      setProgress(0)
       const saved = loadGuestInfo()
       setSavedInfo(saved)
       if (saved) {
@@ -66,12 +72,25 @@ export default function RsvpModal() {
       guest_count: data.guests,
     })
 
+    setProgress(20)
+    const timer = setInterval(() => {
+      setProgress(prev => (prev < 90 ? prev + 5 : prev))
+    }, 100)
+
     try {
-      const response = await fetch('/api/rsvp', {
+      const response = await fetch('https://services.leadconnectorhq.com/hooks/ingqRhlSsMDVzONcCgCo/webhook-trigger/03060417-31ec-4528-bdb2-655d731b27c9', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, event: currentEvent?.name }),
+        body: JSON.stringify({ 
+          ...data, 
+          event: currentEvent?.name,
+          source: 'HappiLee Wedding Website',
+          submittedAt: new Date().toISOString()
+        }),
       })
+
+      clearInterval(timer)
+      setProgress(100)
 
       if (!response.ok) throw new Error('RSVP failed')
 
@@ -93,8 +112,10 @@ export default function RsvpModal() {
         events_rsvped: [currentEvent?.name],
       })
 
-      setSubmitted(true)
+      setTimeout(() => setSubmitted(true), 400)
     } catch (error) {
+      clearInterval(timer)
+      setProgress(0)
       trackEvent('rsvp_submit_failed', { 
         event_name: currentEvent?.name, 
         error: 'Submission error' 
@@ -197,12 +218,60 @@ export default function RsvpModal() {
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="rsvpAddress">Mailing Address</label>
+                  <label htmlFor="rsvpAddress">Street Address</label>
                   <input
                     id="rsvpAddress"
                     {...register('address')}
-                    placeholder="Street, City, State, ZIP"
+                    placeholder="123 Wedding Ave"
+                    required
                   />
+                  {errors.address && <p className="text-rose text-[0.7rem] mt-1 italic">{errors.address.message}</p>}
+                </div>
+
+                <div className="field-row">
+                  <div className="field-group">
+                    <label htmlFor="rsvpCity">City</label>
+                    <input
+                      id="rsvpCity"
+                      {...register('city')}
+                      placeholder="New York"
+                      required
+                    />
+                    {errors.city && <p className="text-rose text-[0.7rem] mt-1 italic">{errors.city.message}</p>}
+                  </div>
+                  <div className="field-group">
+                    <label htmlFor="rsvpState">State / Province</label>
+                    <input
+                      id="rsvpState"
+                      {...register('state')}
+                      placeholder="NY"
+                      required
+                    />
+                    {errors.state && <p className="text-rose text-[0.7rem] mt-1 italic">{errors.state.message}</p>}
+                  </div>
+                </div>
+
+                <div className="field-row">
+                  <div className="field-group">
+                    <label htmlFor="rsvpZip">Zip / Postal Code</label>
+                    <input
+                      id="rsvpZip"
+                      {...register('zip')}
+                      placeholder="10001"
+                      required
+                    />
+                    {errors.zip && <p className="text-rose text-[0.7rem] mt-1 italic">{errors.zip.message}</p>}
+                  </div>
+                  <div className="field-group">
+                    <label htmlFor="rsvpCountry">Country</label>
+                    <input
+                      id="rsvpCountry"
+                      {...register('country')}
+                      placeholder="USA"
+                      required
+                    />
+                    {errors.country && <p className="text-rose text-[0.7rem] mt-1 italic">{errors.country.message}</p>}
+                  </div>
                 </div>
 
                 <div className="field-row">
@@ -237,7 +306,7 @@ export default function RsvpModal() {
                       className="appearance-none"
                     >
                       <option value="" disabled>Select...</option>
-                      <option value="yes">Joyfully accepts</option>
+                      <option value="yes">Would Like To Attend</option>
                       <option value="maybe">Tentative</option>
                       <option value="no">Regretfully declines</option>
                     </select>
@@ -257,19 +326,32 @@ export default function RsvpModal() {
                   >
                     {isSubmitting ? 'Sending...' : 'Submit RSVP'}
                   </button>
+
+                  {isSubmitting && (
+                    <div className="w-full h-1 bg-gold/10 mt-4 overflow-hidden relative">
+                      <div 
+                        className="h-full bg-gold transition-all duration-300 ease-out"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
               </form>
             </div>
           ) : (
             <div className="modal-success" id="modalSuccessView">
-              <div className="modal-success-icon">✓</div>
+              <div className="modal-success-icon animate-sent-check">✓</div>
               <h3 className="modal-success-title">Thank You!</h3>
               <p className="modal-success-message">Your RSVP for</p>
               <div className="modal-success-event" id="successEventName">
                 {currentEvent?.name || 'Engagement Soirée'}
               </div>
               <p className="modal-success-message" style={{ marginBottom: '0.5rem' }}>has been received.</p>
-              <p className="modal-success-message" style={{ fontSize: '0.95rem', color: 'var(--gold)' }}>We'll be in touch with details soon.</p>
+               <p className="modal-success-message" style={{ fontSize: '0.9rem', color: 'var(--gold)', marginTop: '1rem', lineHeight: '1.5' }}>
+                Expect an email in the near future from<br/>
+                <strong style={{ letterSpacing: '0.05em' }}>we.happileeeverafter2027.com</strong><br/>
+                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>(Check junk/spam just in case)</span>
+              </p>
               <div className="modal-form-actions mt-8">
                 <Button onClick={handleClose} variant="outline" className="w-full">
                   Close Window

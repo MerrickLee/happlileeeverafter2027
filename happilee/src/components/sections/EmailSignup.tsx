@@ -1,4 +1,3 @@
-// components/sections/EmailSignup.tsx
 'use client'
 
 import { useState } from 'react'
@@ -10,6 +9,7 @@ import { useSectionTracking } from '@/lib/useSectionTracking'
 import { trackEvent, identifyUser } from '@/lib/amplitude'
 
 const signupSchema = z.object({
+  name: z.string().min(2, 'Full name is required'),
   email: z.string().email('Please enter a valid email address'),
 })
 
@@ -27,15 +27,22 @@ export default function EmailSignup() {
     setStatus('idle')
     trackEvent('email_signup_submit_attempted', { email_domain: data.email.split('@')[1] })
     try {
-      const res = await fetch('/api/subscribe', {
+      const res = await fetch('https://services.leadconnectorhq.com/hooks/ingqRhlSsMDVzONcCgCo/webhook-trigger/1eb472fe-42ed-4250-a527-7ffcb3c7a397', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email }),
+        body: JSON.stringify({
+          ...data,
+          source: 'Wedding Newsletter Signup',
+          submittedAt: new Date().toISOString()
+        }),
       })
       if (res.ok) {
         setStatus('success')
         trackEvent('email_signup_submit_success')
-        identifyUser(data.email, { newsletter_subscriber: true })
+        identifyUser(data.email, { 
+          full_name: data.name,
+          newsletter_subscriber: true 
+        })
         reset()
       } else {
         throw new Error()
@@ -58,28 +65,40 @@ export default function EmailSignup() {
         <form onSubmit={handleSubmit(onSubmit)} className="signup-form">
           <div className="form-group">
             <input
+              {...register('name')}
+              placeholder="Your Full Name"
+              className="form-input"
+            />
+            <input
               {...register('email')}
               type="email"
               placeholder="Your email address"
-              onFocus={() => trackEvent('email_signup_focused')}
               className="form-input"
             />
             <button
               disabled={isSubmitting}
               type="submit"
               className="form-btn"
-              style={isSubmitting ? { opacity: 0.5 } : {}}
             >
               {isSubmitting ? 'Subscribing...' : 'Subscribe'}
             </button>
           </div>
-          {errors.email && (
-            <p style={{ color: 'var(--rose-soft)', marginTop: '0.5rem', fontStyle: 'italic', fontSize: '0.9rem' }}>{errors.email.message as string}</p>
-          )}
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+            {errors.name && (
+              <p style={{ color: 'var(--rose-soft)', fontStyle: 'italic', fontSize: '0.8rem' }}>{errors.name.message as string}</p>
+            )}
+            {errors.email && (
+              <p style={{ color: 'var(--rose-soft)', fontStyle: 'italic', fontSize: '0.8rem' }}>{errors.email.message as string}</p>
+            )}
+          </div>
           {status === 'success' && (
-            <p style={{ marginTop: '1.5rem', textAlign: 'center', fontStyle: 'italic', color: 'var(--gold-bright)' }}>
-              Thank you! You&apos;ve been added to our list.
-            </p>
+            <div style={{ marginTop: '1.5rem', textAlign: 'center', color: 'var(--gold-bright)', fontSize: '0.95rem' }}>
+              <p style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>Thank you! You&apos;ve been added to our list.</p>
+              <p style={{ fontSize: '0.85rem', opacity: 0.9 }}>
+                Expect an email soon from <strong>we.happileeeverafter2027.com</strong><br/>
+                <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>(Check junk/spam just in case)</span>
+              </p>
+            </div>
           )}
           {status === 'error' && (
             <p style={{ marginTop: '1.5rem', textAlign: 'center', fontStyle: 'italic', color: 'var(--rose-soft)' }}>

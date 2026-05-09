@@ -1,6 +1,7 @@
 // components/sections/OurStory.tsx
 'use client'
 
+import Image from 'next/image'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { useSectionTracking } from '@/lib/useSectionTracking'
 
@@ -18,16 +19,46 @@ export default function OurStory() {
 
         <div className="story-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
           <div style={{ position: 'relative' }}>
-            <div style={{ aspectRatio: '3/4', background: 'linear-gradient(135deg, rgba(26,58,92,0.1), transparent), linear-gradient(45deg, var(--rose-deep), var(--rose))', border: '1px solid var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <div style={{ position: 'absolute', inset: 12, border: '1px solid rgba(248,241,227,0.4)', pointerEvents: 'none' }} />
-              <div style={{ fontFamily: 'var(--font-tenor), sans-serif', color: 'var(--bg)', letterSpacing: '0.3em', fontSize: '0.75rem', textAlign: 'center', background: 'rgba(15,39,64,0.6)', padding: '1rem 1.5rem', position: 'relative', zIndex: 2 }}>
-                SEALED IN SANTORINI · 2026
+            <div style={{ aspectRatio: '3/4', position: 'relative', border: '1px solid var(--gold)', overflow: 'visible' }}>
+              {/* Main Image */}
+              <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+                <Image 
+                  src="/assets/merrick-gillian.jpg"
+                  alt="Merrick and Gillian in Santorini"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  priority
+                />
+                {/* Inner border overlay */}
+                <div style={{ position: 'absolute', inset: 12, border: '1px solid rgba(248,241,227,0.4)', pointerEvents: 'none' }} />
+                
+                {/* Subtle overlay text if still desired, but the user said "replace", so I'll keep it very minimal or remove it. 
+                    Actually, the placeholder text was "SEALED IN SANTORINI". I'll keep a more elegant version of it. */}
+                <div style={{ 
+                  position: 'absolute', 
+                  bottom: '2rem', 
+                  left: '50%', 
+                  transform: 'translateX(-50%)',
+                  fontFamily: 'var(--font-tenor), sans-serif', 
+                  color: 'var(--bg)', 
+                  letterSpacing: '0.3em', 
+                  fontSize: '0.7rem', 
+                  textAlign: 'center', 
+                  background: 'rgba(15,39,64,0.4)', 
+                  backdropFilter: 'blur(4px)',
+                  padding: '0.75rem 1.25rem', 
+                  zIndex: 2,
+                  whiteSpace: 'nowrap'
+                }}>
+                  SANTORINI · 2026
+                </div>
               </div>
-              {/* Corner accents */}
-              <div style={{ position: 'absolute', width: 40, height: 40, borderTop: '1px solid var(--gold)', borderLeft: '1px solid var(--gold)', background: 'var(--bg)', top: -10, left: -10 }} />
-              <div style={{ position: 'absolute', width: 40, height: 40, borderTop: '1px solid var(--gold)', borderRight: '1px solid var(--gold)', background: 'var(--bg)', top: -10, right: -10 }} />
-              <div style={{ position: 'absolute', width: 40, height: 40, borderBottom: '1px solid var(--gold)', borderLeft: '1px solid var(--gold)', background: 'var(--bg)', bottom: -10, left: -10 }} />
-              <div style={{ position: 'absolute', width: 40, height: 40, borderBottom: '1px solid var(--gold)', borderRight: '1px solid var(--gold)', background: 'var(--bg)', bottom: -10, right: -10 }} />
+
+              {/* Corner accents - kept outside the overflow hidden to overlap */}
+              <div style={{ position: 'absolute', width: 40, height: 40, borderTop: '1px solid var(--gold)', borderLeft: '1px solid var(--gold)', background: 'var(--bg)', top: -10, left: -10, zIndex: 3 }} />
+              <div style={{ position: 'absolute', width: 40, height: 40, borderTop: '1px solid var(--gold)', borderRight: '1px solid var(--gold)', background: 'var(--bg)', top: -10, right: -10, zIndex: 3 }} />
+              <div style={{ position: 'absolute', width: 40, height: 40, borderBottom: '1px solid var(--gold)', borderLeft: '1px solid var(--gold)', background: 'var(--bg)', bottom: -10, left: -10, zIndex: 3 }} />
+              <div style={{ position: 'absolute', width: 40, height: 40, borderBottom: '1px solid var(--gold)', borderRight: '1px solid var(--gold)', background: 'var(--bg)', bottom: -10, right: -10, zIndex: 3 }} />
             </div>
           </div>
 
@@ -47,7 +78,7 @@ export default function OurStory() {
               </p>
             </div>
 
-            <div className="signature">~ With all our love, M &amp; G ~</div>
+            <div className="signature">~ With all our love, G &amp; M. Lee ~</div>
           </div>
         </div>
       </div>
